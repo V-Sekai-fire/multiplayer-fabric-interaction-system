@@ -34,7 +34,8 @@ in world space.  Place the addon under `addons/interaction_system/`.
 2. Modify the relevant `.gd` file under `addons/interaction_system/`.
 3. Run the `example/` scene to confirm the change works end-to-end.
 4. Run the headless test suite (see above).
-5. Commit as `addon(interaction_system): <description>`.
+5. Commit with a sentence-case message describing what changed,
+   e.g. `Add canvas plane hover event forwarding`.
 
 ## Design notes
 
