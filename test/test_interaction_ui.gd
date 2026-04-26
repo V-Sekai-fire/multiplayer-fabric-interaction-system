@@ -1,4 +1,4 @@
-## RED phase — interaction system placeholder.
+## RED phase — call_gui_input + XR interaction system test.
 ##
 ## Run this as a scene root to see the target UI and which pipeline steps
 ## pass before the full canvas_plane + LassoDB routing is wired.
@@ -48,11 +48,11 @@ func _build_ui() -> void:
 	root.add_child(_panel_root)
 
 	var heading := Label.new()
-	heading.text = "Jellyfish Panel (interaction target)"
+	heading.text = "XR Interaction Target Panel"
 	_panel_root.add_child(heading)
 
 	_btn_release = Button.new()
-	_btn_release.text = "Release Jellyfish"
+	_btn_release.text = "Action Button"
 	_btn_release.pressed.connect(func(): _btn_pressed_fired = true)
 	_panel_root.add_child(_btn_release)
 
