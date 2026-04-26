@@ -23,28 +23,33 @@ func _setup_xr() -> void:
 	if xr_interface == null or not xr_interface.is_initialized():
 		return
 
-	get_viewport().use_xr = true
+	# Use a SubViewport for XR so the main window stays visible for 2D test results
+	var xr_vp := SubViewport.new()
+	xr_vp.name = "XRViewport"
+	xr_vp.use_xr = true
+	add_child(xr_vp)
 
 	var origin := XROrigin3D.new()
 	origin.name = "XROrigin3D"
-	add_child(origin)
+	xr_vp.add_child(origin)
 
 	var cam := XRCamera3D.new()
 	cam.name = "XRCamera3D"
+	cam.position = Vector3(0.0, 1.6, 0.0)
 	origin.add_child(cam)
 
 	# SubViewport renders the 2D UI panel — becomes the canvas plane texture
-	var sub_vp := SubViewport.new()
-	sub_vp.name = "UIViewport"
-	sub_vp.size = Vector2i(1280, 720)
-	sub_vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-	add_child(sub_vp)
+	var ui_vp := SubViewport.new()
+	ui_vp.name = "UIViewport"
+	ui_vp.size = Vector2i(1280, 720)
+	ui_vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	xr_vp.add_child(ui_vp)
 
 	var ui_xr = load("res://addons/interaction_system/test/test_interaction_ui.gd").new()
 	ui_xr.name = "TestInteractionUIXR"
-	sub_vp.add_child(ui_xr)
+	ui_vp.add_child(ui_xr)
 
-	# Quad mesh in XR space shows the SubViewport texture (canvas plane)
+	# Quad mesh in XR space shows the UI SubViewport texture (canvas plane)
 	var quad := MeshInstance3D.new()
 	quad.name = "CanvasPlane"
 	var mesh := QuadMesh.new()
@@ -52,7 +57,7 @@ func _setup_xr() -> void:
 	quad.mesh = mesh
 	quad.position = Vector3(0.0, 1.6, -1.5)
 	var mat := StandardMaterial3D.new()
-	mat.albedo_texture = sub_vp.get_texture()
+	mat.albedo_texture = ui_vp.get_texture()
 	mat.flags_unshaded = true
 	quad.material_override = mat
 	origin.add_child(quad)
@@ -65,8 +70,7 @@ func _setup_xr() -> void:
 		origin.add_child(ctrl)
 
 	# Wire lasso: InteractionManager routes controller pose → lasso query
-	# → find nearest Control in sub_vp → call_gui_input.
-	# canvas_plane addon not present yet — this branch stays RED until added.
+	# → find nearest Control in ui_vp → call_gui_input.
 	if ResourceLoader.exists("res://addons/canvas_plane/canvas_plane.gd"):
 		var im = load("res://addons/interaction_system/interaction_manager.gd").new()
 		im.name = "InteractionManager"

@@ -27,7 +27,7 @@ config_version=5
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/interaction_system/plugin.cfg")
+enabled=PackedStringArray("res://addons/interaction_system/plugin.cfg", "res://addons/canvas_plane/plugin.cfg")
 
 [xr]
 
